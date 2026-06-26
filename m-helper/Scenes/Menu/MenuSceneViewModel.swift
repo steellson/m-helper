@@ -73,6 +73,16 @@ final class MenuSceneViewModel {
                 }
             ),
             .init(
+                kind: .header(title: "AUTORUN:"),
+                action: nil
+            ),
+            .init(
+                kind: .action(title: launchAtLogin ? "Enabled ✅" : "Disabled ❌"),
+                action: { [weak self] in
+                    self?.didToggleLaunchAtLogin()
+                }
+            ),
+            .init(
                 kind: .quit(title: "Quit", key: "Q"),
                 action: { [weak self] in
                     self?.didTapOnQuit()
@@ -83,6 +93,7 @@ final class MenuSceneViewModel {
 
     private var selectedMode: Mode.Kind
     private var selectedInterval: Interval
+    private var launchAtLogin: Bool
     private let screenAreaSelector: ScreenAreaSelector
     private let manipulator: Manipulator
 
@@ -92,6 +103,7 @@ final class MenuSceneViewModel {
     ) {
         self.selectedMode = manipulator.selectedMode
         self.selectedInterval = manipulator.interval
+        self.launchAtLogin = LaunchAtLogin.isEnabled
         self.screenAreaSelector = screenAreaSelector
         self.manipulator = manipulator
     }
@@ -123,6 +135,11 @@ private extension MenuSceneViewModel {
     func didChangeInterval(by seconds: Int) {
         selectedInterval = selectedInterval.adding(seconds)
         manipulator.change(interval: selectedInterval)
+    }
+
+    func didToggleLaunchAtLogin() {
+        LaunchAtLogin.setEnabled(!launchAtLogin)
+        launchAtLogin = LaunchAtLogin.isEnabled
     }
 
     func didTapOnQuit() {
