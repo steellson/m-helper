@@ -11,11 +11,14 @@ final class Scroller: Service {
             mouseButton: .left
         )?.post(tap: .cghidEventTap)
 
+        let magnitude = Int32.random(in: 2...100)
+        let amount = Bool.random() ? magnitude : -magnitude
+
         CGEvent(
             scrollWheelEvent2Source: nil,
             units: .line,
             wheelCount: 1,
-            wheel1: .random(in: -10...10),
+            wheel1: amount,
             wheel2: 0,
             wheel3: 0
         )?.post(tap: .cghidEventTap)

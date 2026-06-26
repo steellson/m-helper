@@ -2,7 +2,7 @@ import Foundation
 
 struct Interval: RawRepresentable, Equatable {
     static let step = 60
-    static let minimum = 1
+    static let minimum = 60
     static let maximum = 600
 
     static let `default` = Interval(rawValue: 60)
@@ -10,8 +10,9 @@ struct Interval: RawRepresentable, Equatable {
     let rawValue: Int
 
     init(rawValue: Int) {
+        let aligned = rawValue / Self.step * Self.step
         self.rawValue = min(
-            max(rawValue, Self.minimum),
+            max(aligned, Self.minimum),
             Self.maximum
         )
     }

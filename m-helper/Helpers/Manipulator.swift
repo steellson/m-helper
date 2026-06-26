@@ -9,6 +9,15 @@ final class Manipulator {
         intervalStorage.value ?? .default
     }
 
+    private var activeServices: [any Service] {
+        switch selectedMode {
+        case .allCombined:
+            services
+        case .click, .move, .scroll:
+            services.filter { $0.type == serviceType(for: selectedMode) }
+        }
+    }
+
     private let modeStorage: Storage<Mode.Kind>
     private let intervalStorage: Storage<Interval>
     private let services: [any Service]
@@ -32,11 +41,16 @@ final class Manipulator {
 // MARK: - Public
 extension Manipulator {
     func start(with area: CGRect) {
-        switch selectedMode {
-        case .click, .move, .scroll:
-            launchSingleMode(with: area)
-        case .allCombined:
-            launchCombinedMode(with: area)
+        task?.cancel()
+        task = Task { [weak self] in
+            while !Task.isCancelled {
+                guard let self else { return }
+                self.tick(in: area)
+
+                try? await Task.sleep(
+                    for: .seconds(Self.randomDelay(upTo: self.interval.seconds))
+                )
+            }
         }
     }
 
@@ -56,33 +70,8 @@ extension Manipulator {
 
 // MARK: - Private
 private extension Manipulator {
-    func launchSingleMode(with area: CGRect) {
-        let target = services.first {
-            $0.type == serviceType(for: selectedMode)
-        }
-
-        guard let target else { return }
-        loop { target.act(in: area) }
-    }
-
-    func launchCombinedMode(with area: CGRect) {
-        loop { [weak self] in
-            self?.services.forEach { $0.act(in: area) }
-        }
-    }
-
-    func loop(_ action: @escaping () -> Void) {
-        task?.cancel()
-
-        let seconds = interval.seconds
-        task = Task {
-            while !Task.isCancelled {
-                action()
-                try? await Task.sleep(
-                    for: .seconds(Self.randomDelay(upTo: seconds))
-                )
-            }
-        }
+    func tick(in area: CGRect) {
+        activeServices.forEach { $0.act(in: area) }
     }
 
     func serviceType(for mode: Mode.Kind) -> ServiceType? {
