@@ -1,3 +1,4 @@
+import AppKit
 import Foundation
 
 final class Manipulator {
@@ -42,6 +43,8 @@ final class Manipulator {
 extension Manipulator {
     func start(with area: CGRect) {
         task?.cancel()
+
+        NSSound(named: "Glass")?.play()
         task = Task { [weak self] in
             while !Task.isCancelled {
                 guard let self else { return }
