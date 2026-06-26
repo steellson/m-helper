@@ -7,7 +7,7 @@ final class MenuSceneViewModel {
     var items: [MenuItemModel] {
         [
             .init(
-                kind: .app(title: "M-HELPER"),
+                kind: .app(title: "M-HELPER 👾"),
                 action: nil
             ),
             .init(

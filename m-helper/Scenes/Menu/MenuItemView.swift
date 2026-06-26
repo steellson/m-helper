@@ -9,13 +9,15 @@ struct MenuItemView: View {
             if config.topSeparated { Divider() }
 
             if config.isButton {
-                Button(config.title) { action?() }
-                    .disabled(!config.isEnabled)
-                    .shortcut(config.key)
+                Button { action?() } label: {
+                    Text(config.title)
+                        .font(.system(.subheadline, design: .monospaced).weight(.regular))
+                }
+                .disabled(!config.isEnabled)
+                .shortcut(config.key)
             } else {
                 Text(config.title)
-                    .tint(.white)
-                    .font(.headline)
+                    .font(.system(.headline, design: .monospaced).weight(.bold))
             }
 
             if config.bottomSeparated { Divider() }

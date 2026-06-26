@@ -18,11 +18,14 @@ struct Mode {
     ) {
         self.kind = kind
         self.isActive = isActive
-        self.name = switch kind {
+
+        var name = switch kind {
         case .click:       "Click"
         case .move:        "Move"
         case .scroll:      "Scroll"
         case .allCombined: "Combined"
         }
+        if isActive { name += " ✅"}
+        self.name = name
     }
 }

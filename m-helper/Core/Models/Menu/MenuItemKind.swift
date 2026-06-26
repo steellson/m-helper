@@ -16,7 +16,7 @@ enum MenuItemKind {
                     isButton: false,
                     isEnabled: true,
                     topSeparated: false,
-                    bottomSeparated: true
+                    bottomSeparated: false
                 )
         case let .togglable(title, key):
                 .init(
