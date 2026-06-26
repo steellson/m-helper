@@ -9,6 +9,5 @@ enum ServiceType {
 protocol Service {
     var type: ServiceType { get }
 
-    func start()
-    func stop()
+    func act(in area: CGRect)
 }

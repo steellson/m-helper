@@ -17,6 +17,22 @@ final class MenuSceneViewModel {
                 }
             ),
             .init(
+                kind: .value(title: "INTERVAL: \(selectedInterval.title)"),
+                action: nil
+            ),
+            .init(
+                kind: .action(title: "+ 1m"),
+                action: { [weak self] in
+                    self?.didChangeInterval(by: Interval.step)
+                }
+            ),
+            .init(
+                kind: .action(title: "- 1m"),
+                action: { [weak self] in
+                    self?.didChangeInterval(by: -Interval.step)
+                }
+            ),
+            .init(
                 kind: .header(title: "SELECT MODE:"),
                 action: nil
             ),
@@ -66,6 +82,7 @@ final class MenuSceneViewModel {
     }
 
     private var selectedMode: Mode.Kind
+    private var selectedInterval: Interval
     private let screenAreaSelector: ScreenAreaSelector
     private let manipulator: Manipulator
 
@@ -74,6 +91,7 @@ final class MenuSceneViewModel {
         manipulator: Manipulator
     ) {
         self.selectedMode = manipulator.selectedMode
+        self.selectedInterval = manipulator.interval
         self.screenAreaSelector = screenAreaSelector
         self.manipulator = manipulator
     }
@@ -83,6 +101,7 @@ final class MenuSceneViewModel {
 private extension MenuSceneViewModel {
     func didTapStartOrStop() {
         guard !isStarted else {
+            manipulator.stop()
             isStarted.toggle()
             return
         }
@@ -91,7 +110,7 @@ private extension MenuSceneViewModel {
             let area = await screenAreaSelector.selectArea()
             guard let area else { return }
 
-            // Call services
+            manipulator.start(with: area)
             isStarted.toggle()
         }
     }
@@ -99,6 +118,11 @@ private extension MenuSceneViewModel {
     func didChangeMode(_ mode: Mode.Kind) {
         selectedMode = mode
         manipulator.change(mode: mode)
+    }
+
+    func didChangeInterval(by seconds: Int) {
+        selectedInterval = selectedInterval.adding(seconds)
+        manipulator.change(interval: selectedInterval)
     }
 
     func didTapOnQuit() {

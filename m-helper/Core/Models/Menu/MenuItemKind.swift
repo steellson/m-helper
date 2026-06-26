@@ -4,6 +4,8 @@ enum MenuItemKind {
     case app(title: String)
     case togglable(title: String, key: Character)
     case header(title: String)
+    case value(title: String)
+    case action(title: String)
     case selectable(mode: Mode)
     case quit(title: String, key: Character)
 
@@ -34,6 +36,24 @@ enum MenuItemKind {
                     isButton: false,
                     isEnabled: true,
                     topSeparated: true,
+                    bottomSeparated: false
+                )
+        case let .value(title):
+                .init(
+                    title: title,
+                    key: nil,
+                    isButton: false,
+                    isEnabled: true,
+                    topSeparated: false,
+                    bottomSeparated: false
+                )
+        case let .action(title):
+                .init(
+                    title: title,
+                    key: nil,
+                    isButton: true,
+                    isEnabled: true,
+                    topSeparated: false,
                     bottomSeparated: false
                 )
         case let .selectable(mode):
