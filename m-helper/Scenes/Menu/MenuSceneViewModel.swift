@@ -12,7 +12,9 @@ final class MenuSceneViewModel {
             ),
             .init(
                 kind: .togglable(title: isStarted ? "Stop" : "Start", key: "S"),
-                action: nil
+                action: { [weak self] in
+                    self?.didTapStartOrStop()
+                }
             ),
             .init(
                 kind: .header(title: "SELECT MODE:"),
@@ -23,32 +25,42 @@ final class MenuSceneViewModel {
                     kind: .move,
                     isActive: selectedMode == .move
                 )),
-                action: nil
+                action: { [weak self] in
+                    self?.didChangeMode(.move)
+                }
             ),
             .init(
                 kind: .selectable(mode: Mode(
                     kind: .click,
                     isActive: selectedMode == .click
                 )),
-                action: nil
+                action: { [weak self] in
+                    self?.didChangeMode(.click)
+                }
             ),
             .init(
                 kind: .selectable(mode: Mode(
                     kind: .scroll,
                     isActive: selectedMode == .scroll
                 )),
-                action: nil
+                action: { [weak self] in
+                    self?.didChangeMode(.scroll)
+                }
             ),
             .init(
                 kind: .selectable(mode: Mode(
                     kind: .allCombined,
                     isActive: selectedMode == .allCombined
                 )),
-                action: nil
+                action: { [weak self] in
+                    self?.didChangeMode(.allCombined)
+                }
             ),
             .init(
                 kind: .quit(title: "Quit", key: "Q"),
-                action: nil
+                action: { [weak self] in
+                    self?.didTapOnQuit()
+                }
             )
         ]
     }
@@ -60,5 +72,20 @@ final class MenuSceneViewModel {
         services: [any Service]
     ) {
         self.services = services
+    }
+}
+
+// MARK: - Metohds
+private extension MenuSceneViewModel {
+    func didTapStartOrStop() {
+        isStarted.toggle()
+    }
+
+    func didChangeMode(_ mode: Mode.Kind) {
+        selectedMode = mode
+    }
+
+    func didTapOnQuit() {
+        NSApp.terminate(self)
     }
 }
