@@ -65,17 +65,19 @@ final class MenuSceneViewModel {
         ]
     }
 
-    private var selectedMode: Mode.Kind = .allCombined
+    private var selectedMode: Mode.Kind {
+        manipulator.selectedMode
+    }
 
     private let screenAreaSelector: ScreenAreaSelector
-    private let services: [any Service]
+    private let manipulator: Manipulator
 
     init(
         screenAreaSelector: ScreenAreaSelector,
-        services: [any Service]
+        manipulator: Manipulator
     ) {
         self.screenAreaSelector = screenAreaSelector
-        self.services = services
+        self.manipulator = manipulator
     }
 }
 
@@ -97,7 +99,7 @@ private extension MenuSceneViewModel {
     }
 
     func didChangeMode(_ mode: Mode.Kind) {
-        selectedMode = mode
+        manipulator.selectedMode = mode
     }
 
     func didTapOnQuit() {
