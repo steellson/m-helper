@@ -95,7 +95,7 @@ private final class SelectionView: NSView {
             height: abs(point.y - origin.y)
         )
 
-        // Обновляем только лёгкий слой, без перерисовки полноэкранного бэкстора.
+        // Update only the lightweight layer, no full-screen backing-store redraw.
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         selectionLayer.path = CGPath(rect: rect, transform: nil)
