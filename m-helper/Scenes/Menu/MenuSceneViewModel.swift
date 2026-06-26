@@ -65,10 +65,7 @@ final class MenuSceneViewModel {
         ]
     }
 
-    private var selectedMode: Mode.Kind {
-        manipulator.selectedMode
-    }
-
+    private var selectedMode: Mode.Kind
     private let screenAreaSelector: ScreenAreaSelector
     private let manipulator: Manipulator
 
@@ -76,6 +73,7 @@ final class MenuSceneViewModel {
         screenAreaSelector: ScreenAreaSelector,
         manipulator: Manipulator
     ) {
+        self.selectedMode = manipulator.selectedMode
         self.screenAreaSelector = screenAreaSelector
         self.manipulator = manipulator
     }
@@ -99,7 +97,8 @@ private extension MenuSceneViewModel {
     }
 
     func didChangeMode(_ mode: Mode.Kind) {
-        manipulator.selectedMode = mode
+        selectedMode = mode
+        manipulator.change(mode: mode)
     }
 
     func didTapOnQuit() {

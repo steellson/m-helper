@@ -1,7 +1,7 @@
 import Foundation
 
 struct Mode {
-    enum Kind {
+    enum Kind: String {
         case click
         case move
         case scroll
