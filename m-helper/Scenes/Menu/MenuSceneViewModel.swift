@@ -66,11 +66,15 @@ final class MenuSceneViewModel {
     }
 
     private var selectedMode: Mode.Kind = .allCombined
+
+    private let screenAreaSelector: ScreenAreaSelector
     private let services: [any Service]
 
     init(
+        screenAreaSelector: ScreenAreaSelector,
         services: [any Service]
     ) {
+        self.screenAreaSelector = screenAreaSelector
         self.services = services
     }
 }
@@ -78,7 +82,18 @@ final class MenuSceneViewModel {
 // MARK: - Metohds
 private extension MenuSceneViewModel {
     func didTapStartOrStop() {
-        isStarted.toggle()
+        guard !isStarted else {
+            isStarted.toggle()
+            return
+        }
+
+        Task {
+            let area = await screenAreaSelector.selectArea()
+            guard let area else { return }
+
+            // Call services
+            isStarted.toggle()
+        }
     }
 
     func didChangeMode(_ mode: Mode.Kind) {
